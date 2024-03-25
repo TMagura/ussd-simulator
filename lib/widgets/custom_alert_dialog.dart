@@ -7,14 +7,14 @@ import '../ussd_repo.dart';
 
 class CustomAlertDialog {
   static void showAlertDialog(
-      {required BuildContext myContext, required UssdResponse ussdResponse}) {
+      {required BuildContext myContext, required UssdResponse ussdResponse, required String ussdPrefix}) {
     TextEditingController message = TextEditingController();
     String content = formatText(ussdResponse.message!);
     AlertDialog alertDialog = AlertDialog(
-
       content: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
             content,
@@ -37,8 +37,8 @@ class CustomAlertDialog {
           visible: isUssdComplete(ussdResponse.stage!),
           child: TextButton(
             onPressed: () {
-              SystemChannels.platform.invokeMethod('SystemNavigator.pop');
-              //Navigator.of(myContext).pop();
+              //SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+              Navigator.of(myContext).pop();
             },
             child: Container(
               padding: const EdgeInsets.all(14),
@@ -55,7 +55,7 @@ class CustomAlertDialog {
                   reference: "SIMBA12",
                   phoneNumber: "263771802352",
                   message: message.text);
-              UssdRepo.sendRequest(ussdRequest, myContext);
+              UssdRepo.sendRequest(ussdRequest, myContext, ussdPrefix);
               Navigator.of(myContext).pop();
             },
             child: Container(
@@ -70,8 +70,8 @@ class CustomAlertDialog {
             child: TextButton(
               onPressed: () {
                 //close app
-               // Navigator.of(myContext).pop();
-                SystemChannels.platform.invokeMethod('SystemNavigator.pop');
+                  Navigator.of(myContext).pop();
+                //SystemChannels.platform.invokeMethod('SystemNavigator.pop');
               },
               child: Container(
                 padding: const EdgeInsets.all(14),
@@ -98,14 +98,14 @@ class CustomAlertDialog {
     List<String> content = text.split('\\n');
     String newContent = "";
     int x = 0;
-    content.forEach((element) {
+    for (var element in content) {
       if (x == 0) {
         newContent = newContent + element;
       } else {
-        newContent = newContent + "\n" + element;
+        newContent = "$newContent\n$element";
       }
       x++;
-    });
+    }
 
     return newContent;
   }

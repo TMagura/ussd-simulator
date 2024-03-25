@@ -26,11 +26,13 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   bool isUssdRunning = false;
+  TextEditingController phoneNumber = TextEditingController();
+  TextEditingController ussdPrefix = TextEditingController();
 
   @override
   Widget build(BuildContext context) {
-    TextEditingController phoneNumber = TextEditingController();
     phoneNumber.text='263';
+    ussdPrefix.text='*111*';
 
     return Scaffold(
       appBar: AppBar(
@@ -42,7 +44,7 @@ class _HomePageState extends State<HomePage> {
       ),
       // ignore: avoid_unnecessary_containers
       body: Container(
-        color: isUssdRunning ? Colors.black : Colors.white,
+       // color: isUssdRunning ? Colors.black : Colors.white,
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
@@ -52,15 +54,16 @@ class _HomePageState extends State<HomePage> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  const Flexible(
+                  Flexible(
                       flex: 2,
-                      child: TextField(
-                        decoration: InputDecoration(
+                      child: TextFormField(
+                        decoration: const InputDecoration(
                           border: OutlineInputBorder(),
-                          hintText: '*143*',
+                          hintText: '*111*',
                         ),
-                        readOnly: true,
-                      )),
+                        controller: ussdPrefix,
+                        keyboardType: TextInputType.phone,
+                      ),),
                   const SizedBox(
                     width: 2,
                   ),
@@ -97,14 +100,14 @@ class _HomePageState extends State<HomePage> {
               child: ElevatedButton(
                 onPressed: () {
                   setState(() {
-                    isUssdRunning = true;
+                    //isUssdRunning = true;
                   });
                   UssdRequest ussdRequest = UssdRequest(
                       stage: "FIRST",
                       reference: "SIMBA12",
                       phoneNumber: phoneNumber.text,
                       message: "");
-                  UssdRepo.sendRequest(ussdRequest, context);
+                  UssdRepo.sendRequest(ussdRequest, context, ussdPrefix.text);
                 },
                 child: const Text("Request Ussd"),
               ),
